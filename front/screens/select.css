@@ -1,0 +1,60 @@
+.White-space {
+    margin-bottom: 160px;
+}
+
+.select {
+    margin: 0px 30px;
+    display:flex;
+    flex-direction: column;
+}
+
+.select__title {
+    font-size: 25px;
+    margin-top: 20px;
+    margin-bottom: 11px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.select__title-picture {
+    margin-right: 10px;
+}
+
+.select__text {
+    font-size: 15px;
+    margin-bottom: 35px;
+}
+
+.select-button {
+    margin: 0px 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.select-button__one {
+    margin-bottom: 20px;
+    padding: 20px 0px;
+    background-color: white;
+    border-radius: 5px;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.select-button__two {
+    margin-bottom: 20px;
+    padding: 20px 0px;
+    background-color: white;
+    border-radius: 5px;
+    font-size: 17px;
+    cursor: pointer;
+}
+
+.select-button__three {
+    margin-bottom: 20px;
+    padding: 20px 0px;
+    background-color: white;
+    border-radius: 5px;
+    font-size: 17px;
+    cursor: pointer;
+}
