@@ -11,6 +11,8 @@ from selenium.webdriver.common.by import By
 import time
 from selenium.common.exceptions import NoSuchElementException
 import re
+import gc
+
 
 def get_data(ID):
     url = "https://m.blog.naver.com/{}?categoryNo=0&listStyle=photo".format(ID)
@@ -39,6 +41,8 @@ def get_data(ID):
         innerText = soup.select_one("#ct > div._postView").text.replace(removeText, '')
         innerText = re.sub('[ ]+', ' ', re.sub('[^ 가-힣]+',' ', innerText))
         innerTexts.append(innerText[:len(innerText)-70])
+
+    driver.quit()
 
     return innerTexts
 
@@ -73,9 +77,13 @@ def keywords(userid):
     soy_nouns = noun_extractor.train_extract([' '.join(texts)])
     tmp = sorted(soy_nouns.items(), key = lambda item: item[1].frequency, reverse = True)
     tmp = [i for i in soy_nouns.items() if i[1].frequency >4]
-    tmp = sorted(tmp, key = lambda item: len(item[0]), reverse = True)
+    # tmp = sorted(tmp, key = lambda item: len(item[0]), reverse = True)
+    tmp.sort(key = lambda item: len(item[0]), reverse = True)
     nouns = [i[0] for i in tmp if i[1].frequency>3 and len(i[0])>2][:30]
     okt_nouns = [' '.join(okt.nouns(text)) for text in texts]
+
+    del tmp
+    gc.collect()
 
     #키워드 추출
 
@@ -85,4 +93,4 @@ def keywords(userid):
     keywords = prune_keywords(keywords, stopwords)
     result = list(set([n for n in nouns if n not in stopwords]))
     result.extend(list((keywords.keys())))
-    return {"keywords":result}
+    return '_'.join(result)

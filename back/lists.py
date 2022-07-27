@@ -1,6 +1,6 @@
 from flask import request
 from flask_restx import Resource, Api, Namespace, fields
-from func import print_json, userLoanlist, sns_blog_keyword
+from func import print_json, userLoanlist, sns_blog_keyword, sns_recommend
 
 List = Namespace('List', description="각종 목록을 가져오기 위한 API (ex: 도서관 목록, 키워드, 사용자 대출 목록 등)")
 
@@ -30,5 +30,12 @@ class ListPost(Resource):
         uid = params["id"]
         upw = params["pw"]
         return userLoanlist.get_data(uid, upw)
+
+@List.route('/recommend/<string:id>')
+class Recommend(Resource):
+    def get(self, id):
+        """키워드 기반 도서 추천 결과"""
+        keyword = sns_blog_keyword.keywords(id)
+        return sns_recommend.sns_recommend(keyword)
 
 

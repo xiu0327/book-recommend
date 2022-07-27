@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import json
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
 
 def get_recommendations(keyword, title_to_index, key, cosine_sim):
 
@@ -20,28 +24,26 @@ def get_recommendations(keyword, title_to_index, key, cosine_sim):
     return result
 
 def sns_recommend(keywords):
-    import json
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    from sklearn.metrics.pairwise import cosine_similarity
 
-    with open('/home/ubuntu/data/corpus(khaiii).json', 'r', encoding="utf-8") as f:
-        corpus = json.load(f)
-
-    with open('/home/ubuntu/data/yes24_미대출도서_테스트용(new_category).json', 'r', encoding="utf-8") as f:
+    with open('/home/ubuntu/data/yes24_미대출도서(new_category).json', 'r', encoding="utf-8") as f:
         bookinfo = json.load(f)
 
-    result = dict()
+    f.close()
+
+
+    keywords = keywords.split("_")
+
+    result = []
 
     for keyword in keywords:
         tfidf = TfidfVectorizer()
-        data = list(corpus.values()) #키워드 추가
+        # data = list(corpus.values()) #키워드 추가
+        data = [bookinfo[key]["bookToken"] for key in bookinfo.keys()]
         data.append(keyword)
         tfidf_matrix = tfidf.fit_transform(data)
         cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
         title_to_index = dict(zip(data, [n for n in range(len(data))]))
+        result.extend(get_recommendations(keyword, title_to_index, list(bookinfo.keys()), cosine_sim))
+        # result.append([bookinfo[item] for item in get_recommendations(keyword, title_to_index, list(bookinfo.keys()), cosine_sim)])
 
-        result[keyword] = [bookinfo[item] for item in get_recommendations(keyword, title_to_index, list(corpus.keys()), cosine_sim)]
-
-    return result
-
-print(sns_recommend(['여름']))
+    return [bookinfo[item] for item in list(set(result))]
